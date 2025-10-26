@@ -4,6 +4,10 @@ import numpy as np
 import base64
 import cv2
 from wavelet import w2d
+import sklearn.preprocessing
+import sys
+sys.modules['sklearn.preprocessing.data'] = sklearn.preprocessing
+
 
 __class_name_to_number = {}
 __class_number_to_name = {}
@@ -37,14 +41,14 @@ def class_number_to_name(class_num):
 
 def load_saved_artifacts():
     print("loading saved artifacts...start")
+    global __model
     global __class_name_to_number
     global __class_number_to_name
 
-    with open("./artifacts/class_dictionary.json", "r") as f:
+    with open("./artifacts/class_dictionary.json", "rb") as f:
         __class_name_to_number = json.load(f)
         __class_number_to_name = {v:k for k,v in __class_name_to_number.items()}
 
-    global __model
     if __model is None:
         with open('./artifacts/saved_model.pkl', 'rb') as f:
             __model = joblib.load(f)
